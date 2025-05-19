@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Dialog,
   DialogActions, DialogContent, DialogTitle, TextField, MenuItem,Select
 } from '@mui/material';
 import { editarTarea, borrarTarea, crearTarea } from '../services/tareasservice';
+import { getPerfil } from '../services/authService';
 
 export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
   const [openEditar, setOpenEditar] = useState(false);
@@ -12,6 +13,22 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
   const [tareaActual, setTareaActual] = useState(null);
   const [nuevaTarea, setNuevaTarea] = useState({ titulo: '', descripcion: '', prioridad: '', estado: '',fecha_vencimiento: '' });
   const [idAEliminar, setIdAEliminar] = useState(null);
+  const [usuario, setUsuario] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+    getPerfil()
+      .then(data => {
+        setUsuario(data);
+      })
+      .catch(() => {
+        setUsuario(null);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
+   if (loading) return <p>Cargando...</p>;
 
   // Edición
   const handleEditarClick = (tarea) => {
@@ -83,9 +100,11 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
 
   return (
     <>
-      <Button variant="contained" color="primary" onClick={handleAbrirCrear} style={{ marginBottom: 16 }}>
-        Crear Tarea
-      </Button>
+      {usuario?.rol === 'admin' && (          
+    <Button variant="contained" color="primary" onClick={handleAbrirCrear} style={{ marginBottom: 16 }}>
+      Crear Tarea
+    </Button> 
+    )}
 
       <TableContainer component={Paper}>
         <Table>
@@ -97,7 +116,9 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
               <TableCell>Prioridad</TableCell>
               <TableCell>Estado</TableCell>
               <TableCell>Fecha Vencimiento</TableCell>
-              <TableCell>Acciones</TableCell>
+              {usuario?.rol === 'admin' && (
+                <TableCell>Acciones</TableCell>
+              )}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -119,10 +140,11 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
                       })
                     : ''}
                 </TableCell>
+                {usuario?.rol === 'admin' && (    
                 <TableCell>
                   <Button onClick={() => handleEditarClick(tarea)}>Editar</Button>
                   <Button color="error" onClick={() => handleSolicitarBorrado(tarea.id)}>Borrar</Button>
-                </TableCell>
+                </TableCell>)}
               </TableRow>
             ))}
           </TableBody>
@@ -149,6 +171,7 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
             fullWidth
           />
           <TextField
+            type='number'
             margin="dense"
             label="Prioridad"
             name="prioridad"
@@ -156,15 +179,15 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
             onChange={handleChangeEditar}
             fullWidth
           />
-              <Select
-                label="Estado"
-                name="estado"
-                value={nuevaTarea.estado}
-                onChange={handleChangeCrear}
-                fullWidth
-                margin="dense"
-                displayEmpty
-              >
+          <Select
+            label="Estado"
+            name="estado"
+            value={nuevaTarea.estado}
+            onChange={handleChangeCrear}
+            fullWidth
+            margin="dense"
+            displayEmpty
+          >
                 <MenuItem value="" disabled>
                   Seleccione un estado
                 </MenuItem>
@@ -189,6 +212,7 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
         </DialogActions>
       </Dialog>
 
+       {/*Crear tarea*/}
       <Dialog open={openCrear} onClose={handleCerrarCrear}>
         <DialogTitle>Crear Tarea</DialogTitle>
         <DialogContent>
@@ -209,6 +233,7 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
             fullWidth
           />
           <TextField
+            type='number'
             margin="dense"
             label="Prioridad"
             name="prioridad"
