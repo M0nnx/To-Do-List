@@ -1,20 +1,17 @@
-import React, { useState,useEffect } from 'react';
-import {
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Dialog,
-  DialogActions, DialogContent, DialogTitle, TextField, MenuItem,Select
-} from '@mui/material';
+import React, { useState, useEffect } from 'react';
 import { editarTarea, borrarTarea, crearTarea } from '../services/tareasservice';
 import { getPerfil, obtenerUsuarios } from '../services/authService';
+
 
 export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
   const [openEditar, setOpenEditar] = useState(false);
   const [openCrear, setOpenCrear] = useState(false);
   const [openConfirmarBorrado, setOpenConfirmarBorrado] = useState(false);
   const [tareaActual, setTareaActual] = useState(null);
-  const [nuevaTarea, setNuevaTarea] = useState({ titulo: '', descripcion: '', prioridad: '', estado: '',fecha_vencimiento: '',username: '', usuario_id:''});
+  const [nuevaTarea, setNuevaTarea] = useState({ titulo: '', descripcion: '', prioridad: '', estado: '', fecha_vencimiento: '', username: '', usuario_id: '' });
   const [idAEliminar, setIdAEliminar] = useState(null);
   const [usuarios, setUsuarios] = useState([]);
-  const [usuario,setUsuario] = useState(null);
+  const [usuario, setUsuario] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -35,8 +32,7 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
     fetchData();
   }, []); // Ejecutar solo al montar
 
-  if (loading) return <p>Cargando...</p>;
-
+  if (loading) return <p className="text-center py-4">Cargando...</p>;
 
   // Edición
   const handleEditarClick = (tarea) => {
@@ -59,7 +55,7 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
 
   // Creación
   const handleAbrirCrear = () => {
-    setNuevaTarea({ titulo: '', descripcion: '', prioridad: '', estado: '',fecha_vencimiento: '',username: '',usuario_id:'' });
+    setNuevaTarea({ titulo: '', descripcion: '', prioridad: '', estado: '', fecha_vencimiento: '', username: '', usuario_id: '' });
     setOpenCrear(true);
   };
 
@@ -99,243 +95,321 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
     });
   };
 
-const handleChangeCrear = (e) => {
-  const { name, value } = e.target;
-  console.log(`Cambio en ${name}:`, value); // <- Aquí para verificar
-  setNuevaTarea({
-    ...nuevaTarea,
-    [name]: value,
-  });
-};
+  const handleChangeCrear = (e) => {
+    const { name, value } = e.target;
+    console.log(`Cambio en ${name}:`, value); // <- Aquí para verificar
+    setNuevaTarea({
+      ...nuevaTarea,
+      [name]: value,
+    });
+  };
+
   return (
     <>
-      {usuario?.rol === 'admin' && (          
-    <Button variant="contained" color="primary" onClick={handleAbrirCrear} style={{ marginBottom: 16 }}>
-      Crear Tarea
-    </Button> 
-    )}
+      {usuario?.rol === 'admin' && (
+        <button 
+          className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded mb-4 transition duration-200"
+          onClick={handleAbrirCrear}
+        >
+          Crear Tarea
+        </button>
+      )}
 
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>ID</TableCell>
-              <TableCell>Título</TableCell>
-              <TableCell>Descripción</TableCell>
-              <TableCell>Prioridad</TableCell>
-              <TableCell>Estado</TableCell>
-              <TableCell>Encargado</TableCell>
-              <TableCell>Fecha Vencimiento</TableCell>
+      <div className="overflow-x-auto shadow-md rounded-lg">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Título</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prioridad</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Encargado</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha Vencimiento</th>
               {usuario?.rol === 'admin' && (
-                <TableCell>Acciones</TableCell>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
               )}
-            </TableRow>
-          </TableHead>
-          <TableBody>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
             {tareas.map((tarea) => (
-              <TableRow key={tarea.id}>
-                <TableCell>{tarea.id}</TableCell>
-                <TableCell>{tarea.titulo}</TableCell>
-                <TableCell>{tarea.descripcion}</TableCell>
-                <TableCell>{tarea.prioridad}</TableCell>
-                <TableCell>{tarea.estado}</TableCell>
-                <TableCell>{tarea.usuario.username}</TableCell>
-                <TableCell>
+              <tr key={tarea.id} className="hover:bg-gray-50">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{tarea.id}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{tarea.titulo}</td>
+                <td className="px-6 py-4 text-sm text-gray-900">{tarea.descripcion}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{tarea.prioridad}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                    ${tarea.estado === 'completada' ? 'bg-green-100 text-green-800' : 
+                      tarea.estado === 'en progreso' ? 'bg-blue-100 text-blue-800' : 
+                      'bg-yellow-100 text-yellow-800'}`}>
+                    {tarea.estado}
+                  </span>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{tarea.usuario.username}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {tarea.fecha_vencimiento
                     ? new Date(tarea.fecha_vencimiento).toLocaleString('es-CL', {
-                        year: 'numeric',
-                        month: '2-digit',
-                        day: '2-digit',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })
+                      year: 'numeric',
+                      month: '2-digit',
+                      day: '2-digit',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })
                     : ''}
-                </TableCell>
-                {usuario?.rol === 'admin' && (    
-                <TableCell>
-                  <Button onClick={() => handleEditarClick(tarea)}>Editar</Button>
-                  <Button color="error" onClick={() => handleSolicitarBorrado(tarea.id)}>Borrar</Button>
-                </TableCell>)}
-              </TableRow>
+                </td>
+                {usuario?.rol === 'admin' && (
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <button onClick={() => handleEditarClick(tarea)} className="text-blue-600 hover:text-blue-900 mr-3">
+                      Editar
+                    </button>
+                    <button onClick={() => handleSolicitarBorrado(tarea.id)} className="text-red-600 hover:text-red-900">
+                      Borrar
+                    </button>
+                  </td>
+                )}
+              </tr>
             ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+          </tbody>
+        </table>
+      </div>
 
-      <Dialog open={openEditar} onClose={handleCerrarEditar}>
-        <DialogTitle>Editar Tarea</DialogTitle>
-        <DialogContent>
-          <TextField
-            margin="dense"
-            label="Título"
-            name="titulo"
-            value={tareaActual?.titulo || ''}
-            onChange={handleChangeEditar}
-            fullWidth
-          />
-          <TextField
-            margin="dense"
-            label="Descripción"
-            name="descripcion"
-            value={tareaActual?.descripcion || ''}
-            onChange={handleChangeEditar}
-            fullWidth
-          />
-          <TextField
-            type='number'
-            margin="dense"
-            label="Prioridad"
-            name="prioridad"
-            value={tareaActual?.prioridad || ''}
-            onChange={handleChangeEditar}
-            fullWidth
-          />
-          
-<Select
-  label="Usuario encargado"
-  name="usuario_id"
-  value={nuevaTarea.usuario_id || ''}
-  onChange={handleChangeEditar} // o handleChangeEditar según el caso
-  fullWidth
-  margin="dense"
-  displayEmpty
->
-  <MenuItem value="" disabled>
-    Seleccione un usuario
-  </MenuItem>
-  {usuarios.map(user => (
-    <MenuItem key={user.id} value={user.id}>
-      {user.username}
-    </MenuItem>
-  ))}
-</Select>
+      {/* Modal de Edición */}
+      {openEditar && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
+            <div className="p-6">
+              <h3 className="text-lg font-medium text-gray-900 mb-4">Editar Tarea</h3>
+              <div className="space-y-4">
+                <div>
+                  <label htmlFor="titulo" className="block text-sm font-medium text-gray-700">Título</label>
+                  <input
+                    type="text"
+                    name="titulo"
+                    id="titulo"
+                    className="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                    value={tareaActual?.titulo || ''}
+                    onChange={handleChangeEditar}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="descripcion" className="block text-sm font-medium text-gray-700">Descripción</label>
+                  <textarea
+                    name="descripcion"
+                    id="descripcion"
+                    rows="3"
+                    className="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                    value={tareaActual?.descripcion || ''}
+                    onChange={handleChangeEditar}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="prioridad" className="block text-sm font-medium text-gray-700">Prioridad</label>
+                  <input
+                    type="number"
+                    name="prioridad"
+                    id="prioridad"
+                    className="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                    value={tareaActual?.prioridad || ''}
+                    onChange={handleChangeEditar}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="usuario_id" className="block text-sm font-medium text-gray-700">Usuario encargado</label>
+                  <select
+                    id="usuario_id"
+                    name="usuario_id"
+                    className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    value={tareaActual?.usuario_id || ''}
+                    onChange={handleChangeEditar}
+                  >
+                    <option value="" disabled>Seleccione un usuario</option>
+                    {usuarios.map(user => (
+                      <option key={user.id} value={user.id}>
+                        {user.username}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor="estado" className="block text-sm font-medium text-gray-700">Estado</label>
+                  <select
+                    id="estado"
+                    name="estado"
+                    className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    value={tareaActual?.estado || ''}
+                    onChange={handleChangeEditar}
+                  >
+                    <option value="" disabled>Seleccione un estado</option>
+                    <option value="pendiente">Pendiente</option>
+                    <option value="en progreso">En Progreso</option>
+                    <option value="completada">Completada</option>
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor="fecha_vencimiento" className="block text-sm font-medium text-gray-700">Fecha Vencimiento</label>
+                  <input
+                    type="datetime-local"
+                    name="fecha_vencimiento"
+                    id="fecha_vencimiento"
+                    className="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                    value={tareaActual?.fecha_vencimiento ? tareaActual.fecha_vencimiento.slice(0, 16) : ''}
+                    onChange={handleChangeEditar}
+                  />
+                </div>
+              </div>
+              <div className="mt-6 flex justify-end space-x-3">
+                <button
+                  type="button"
+                  className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  onClick={handleCerrarEditar}
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  onClick={handleGuardar}
+                >
+                  Guardar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
-          <Select
-            label="Estado"
-            name="estado"
-            value={nuevaTarea.estado}
-            onChange={handleChangeCrear}
-            fullWidth
-            margin="dense"
-            displayEmpty
-          >
-                <MenuItem value="" disabled>
-                  Seleccione un estado
-                </MenuItem>
-                <MenuItem value="pendiente">Pendiente</MenuItem>
-                <MenuItem value="en progreso">En Progreso</MenuItem>
-                <MenuItem value="completada">Completada</MenuItem>
-              </Select>
-            <TextField
-              margin="dense"
-              label="Fecha Vencimiento"
-              name="fecha_vencimiento"
-              type="datetime-local"
-              value={tareaActual?.fecha_vencimiento ? tareaActual.fecha_vencimiento.slice(0, 16) : ''}
-              onChange={handleChangeEditar}
-              fullWidth
-              InputLabelProps={{ shrink: true }}
-            />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCerrarEditar}>Cancelar</Button>
-          <Button onClick={handleGuardar}>Guardar</Button>
-        </DialogActions>
-      </Dialog>
+      {/* Modal de Creación */}
+      {openCrear && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
+            <div className="p-6">
+              <h3 className="text-lg font-medium text-gray-900 mb-4">Crear Tarea</h3>
+              <div className="space-y-4">
+                <div>
+                  <label htmlFor="titulo-nuevo" className="block text-sm font-medium text-gray-700">Título</label>
+                  <input
+                    type="text"
+                    name="titulo"
+                    id="titulo-nuevo"
+                    className="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                    value={nuevaTarea.titulo}
+                    onChange={handleChangeCrear}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="descripcion-nuevo" className="block text-sm font-medium text-gray-700">Descripción</label>
+                  <textarea
+                    name="descripcion"
+                    id="descripcion-nuevo"
+                    rows="3"
+                    className="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                    value={nuevaTarea.descripcion}
+                    onChange={handleChangeCrear}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="prioridad-nuevo" className="block text-sm font-medium text-gray-700">Prioridad</label>
+                  <input
+                    type="number"
+                    name="prioridad"
+                    id="prioridad-nuevo"
+                    className="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                    value={nuevaTarea.prioridad}
+                    onChange={handleChangeCrear}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="usuario_id-nuevo" className="block text-sm font-medium text-gray-700">Usuario encargado</label>
+                  <select
+                    id="usuario_id-nuevo"
+                    name="usuario_id"
+                    className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    value={nuevaTarea.usuario_id || ''}
+                    onChange={handleChangeCrear}
+                  >
+                    <option value="" disabled>Seleccione un usuario</option>
+                    {usuarios.map(user => (
+                      <option key={user.id} value={user.id}>
+                        {user.username}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor="estado-nuevo" className="block text-sm font-medium text-gray-700">Estado</label>
+                  <select
+                    id="estado-nuevo"
+                    name="estado"
+                    className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    value={nuevaTarea.estado}
+                    onChange={handleChangeCrear}
+                  >
+                    <option value="" disabled>Seleccione un estado</option>
+                    <option value="pendiente">Pendiente</option>
+                    <option value="en progreso">En Progreso</option>
+                    <option value="completada">Completada</option>
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor="fecha_vencimiento-nuevo" className="block text-sm font-medium text-gray-700">Fecha Vencimiento</label>
+                  <input
+                    type="datetime-local"
+                    name="fecha_vencimiento"
+                    id="fecha_vencimiento-nuevo"
+                    className="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                    value={nuevaTarea.fecha_vencimiento}
+                    onChange={handleChangeCrear}
+                  />
+                </div>
+              </div>
+              <div className="mt-6 flex justify-end space-x-3">
+                <button
+                  type="button"
+                  className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  onClick={handleCerrarCrear}
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  onClick={handleCrear}
+                >
+                  Crear
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
-       {/*Crear tarea*/}
-<Dialog open={openCrear} onClose={handleCerrarCrear}>
-  <DialogTitle>Crear Tarea</DialogTitle>
-  <DialogContent>
-    <TextField
-      margin="dense"
-      label="Título"
-      name="titulo"
-      value={nuevaTarea.titulo}
-      onChange={handleChangeCrear}
-      fullWidth
-    />
-    <TextField
-      margin="dense"
-      label="Descripción"
-      name="descripcion"
-      value={nuevaTarea.descripcion}
-      onChange={handleChangeCrear}
-      fullWidth
-    />
-    <TextField
-      type="number"
-      margin="dense"
-      label="Prioridad"
-      name="prioridad"
-      value={nuevaTarea.prioridad}
-      onChange={handleChangeCrear}
-      fullWidth
-    />
-
-    {/* Select de Usuario encargado */}
-    <Select
-      label="Usuario encargado"
-      name="usuario_id"
-      value={nuevaTarea.usuario_id || ''}
-      onChange={handleChangeCrear}
-      fullWidth
-      margin="dense"
-      displayEmpty
-    >
-      <MenuItem value="" disabled>
-        Seleccione un usuario
-      </MenuItem>
-      {usuarios.map(user => (
-        <MenuItem key={user.id} value={user.id}>
-          {user.username}
-        </MenuItem>
-      ))}
-    </Select>
-
-    {/* Select de Estado */}
-    <Select
-      label="Estado"
-      name="estado"
-      value={nuevaTarea.estado}
-      onChange={handleChangeCrear}
-      fullWidth
-      margin="dense"
-      displayEmpty
-    >
-      <MenuItem value="" disabled>
-        Seleccione un estado
-      </MenuItem>
-      <MenuItem value="pendiente">Pendiente</MenuItem>
-      <MenuItem value="en progreso">En Progreso</MenuItem>
-      <MenuItem value="completada">Completada</MenuItem>
-    </Select>
-
-    <TextField
-      margin="dense"
-      label="Fecha Vencimiento"
-      name="fecha_vencimiento"
-      type="datetime-local"
-      value={nuevaTarea.fecha_vencimiento}
-      onChange={handleChangeCrear}
-      fullWidth
-      InputLabelProps={{ shrink: true }}
-    />
-  </DialogContent>
-  <DialogActions>
-    <Button onClick={handleCerrarCrear}>Cancelar</Button>
-    <Button onClick={handleCrear}>Crear</Button>
-  </DialogActions>
-</Dialog>
-
-
-      <Dialog open={openConfirmarBorrado} onClose={handleCancelarBorrado}>
-        <DialogTitle>¿Confirmar eliminación?</DialogTitle>
-        <DialogActions>
-          <Button onClick={handleCancelarBorrado}>Cancelar</Button>
-          <Button color="error" onClick={handleConfirmarBorrado}>Eliminar</Button>
-        </DialogActions>
-      </Dialog>
+      {/* Modal de Confirmación de Borrado */}
+      {openConfirmarBorrado && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-sm mx-4">
+            <div className="p-6">
+              <h3 className="text-lg font-medium text-gray-900 mb-4">¿Confirmar eliminación?</h3>
+              <div className="mt-6 flex justify-end space-x-3">
+                <button
+                  type="button"
+                  className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  onClick={handleCancelarBorrado}
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                  onClick={handleConfirmarBorrado}
+                >
+                  Eliminar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
