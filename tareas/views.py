@@ -13,7 +13,7 @@ class crearTarea(APIView):
     def post(self, request):
         serializer = TareaSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(usuario=request.user)
+            serializer.save()
             return Response({"mensaje": "Tarea creada correctamente"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

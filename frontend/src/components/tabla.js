@@ -4,31 +4,39 @@ import {
   DialogActions, DialogContent, DialogTitle, TextField, MenuItem,Select
 } from '@mui/material';
 import { editarTarea, borrarTarea, crearTarea } from '../services/tareasservice';
-import { getPerfil } from '../services/authService';
+import { getPerfil, obtenerUsuarios } from '../services/authService';
 
 export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
   const [openEditar, setOpenEditar] = useState(false);
   const [openCrear, setOpenCrear] = useState(false);
   const [openConfirmarBorrado, setOpenConfirmarBorrado] = useState(false);
   const [tareaActual, setTareaActual] = useState(null);
-  const [nuevaTarea, setNuevaTarea] = useState({ titulo: '', descripcion: '', prioridad: '', estado: '',fecha_vencimiento: '' });
+  const [nuevaTarea, setNuevaTarea] = useState({ titulo: '', descripcion: '', prioridad: '', estado: '',fecha_vencimiento: '',username: '', usuario_id:''});
   const [idAEliminar, setIdAEliminar] = useState(null);
-  const [usuario, setUsuario] = useState(null);
+  const [usuarios, setUsuarios] = useState([]);
+  const [usuario,setUsuario] = useState(null);
   const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-    getPerfil()
-      .then(data => {
-        setUsuario(data);
-      })
-      .catch(() => {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const perfil = await getPerfil();
+        setUsuario(perfil);
+
+        const lista = await obtenerUsuarios();
+        setUsuarios(Array.isArray(lista) ? lista : []);
+      } catch {
         setUsuario(null);
-      })
-      .finally(() => {
+        setUsuarios([]);
+      } finally {
         setLoading(false);
-      });
-  }, []);
-   if (loading) return <p>Cargando...</p>;
+      }
+    };
+    fetchData();
+  }, []); // Ejecutar solo al montar
+
+  if (loading) return <p>Cargando...</p>;
+
 
   // Edición
   const handleEditarClick = (tarea) => {
@@ -51,7 +59,7 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
 
   // Creación
   const handleAbrirCrear = () => {
-    setNuevaTarea({ titulo: '', descripcion: '', prioridad: '', estado: '',fecha_vencimiento: '' });
+    setNuevaTarea({ titulo: '', descripcion: '', prioridad: '', estado: '',fecha_vencimiento: '',username: '',usuario_id:'' });
     setOpenCrear(true);
   };
 
@@ -91,13 +99,14 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
     });
   };
 
-  const handleChangeCrear = (e) => {
-    setNuevaTarea({
-      ...nuevaTarea,
-      [e.target.name]: e.target.value,
-    });
-  };
-
+const handleChangeCrear = (e) => {
+  const { name, value } = e.target;
+  console.log(`Cambio en ${name}:`, value); // <- Aquí para verificar
+  setNuevaTarea({
+    ...nuevaTarea,
+    [name]: value,
+  });
+};
   return (
     <>
       {usuario?.rol === 'admin' && (          
@@ -115,6 +124,7 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
               <TableCell>Descripción</TableCell>
               <TableCell>Prioridad</TableCell>
               <TableCell>Estado</TableCell>
+              <TableCell>Encargado</TableCell>
               <TableCell>Fecha Vencimiento</TableCell>
               {usuario?.rol === 'admin' && (
                 <TableCell>Acciones</TableCell>
@@ -129,6 +139,7 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
                 <TableCell>{tarea.descripcion}</TableCell>
                 <TableCell>{tarea.prioridad}</TableCell>
                 <TableCell>{tarea.estado}</TableCell>
+                <TableCell>{tarea.usuario.username}</TableCell>
                 <TableCell>
                   {tarea.fecha_vencimiento
                     ? new Date(tarea.fecha_vencimiento).toLocaleString('es-CL', {
@@ -179,6 +190,26 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
             onChange={handleChangeEditar}
             fullWidth
           />
+          
+<Select
+  label="Usuario encargado"
+  name="usuario_id"
+  value={nuevaTarea.usuario_id || ''}
+  onChange={handleChangeEditar} // o handleChangeEditar según el caso
+  fullWidth
+  margin="dense"
+  displayEmpty
+>
+  <MenuItem value="" disabled>
+    Seleccione un usuario
+  </MenuItem>
+  {usuarios.map(user => (
+    <MenuItem key={user.id} value={user.id}>
+      {user.username}
+    </MenuItem>
+  ))}
+</Select>
+
           <Select
             label="Estado"
             name="estado"
@@ -213,66 +244,90 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
       </Dialog>
 
        {/*Crear tarea*/}
-      <Dialog open={openCrear} onClose={handleCerrarCrear}>
-        <DialogTitle>Crear Tarea</DialogTitle>
-        <DialogContent>
-          <TextField
-            margin="dense"
-            label="Título"
-            name="titulo"
-            value={nuevaTarea.titulo}
-            onChange={handleChangeCrear}
-            fullWidth
-          />
-          <TextField
-            margin="dense"
-            label="Descripción"
-            name="descripcion"
-            value={nuevaTarea.descripcion}
-            onChange={handleChangeCrear}
-            fullWidth
-          />
-          <TextField
-            type='number'
-            margin="dense"
-            label="Prioridad"
-            name="prioridad"
-            value={nuevaTarea.prioridad}
-            onChange={handleChangeCrear}
-            fullWidth
-          />
-            <Select
-              label="Estado"
-              name="estado"
-              value={nuevaTarea.estado}
-              onChange={handleChangeCrear}
-              fullWidth
-              margin="dense"
-              displayEmpty
-            >
-              <MenuItem value="" disabled>
-                Seleccione un estado
-              </MenuItem>
-              <MenuItem value="pendiente">Pendiente</MenuItem>
-              <MenuItem value="en progreso">En Progreso</MenuItem>
-              <MenuItem value="completada">Completada</MenuItem>
-            </Select>
-            <TextField
-              margin="dense"
-              label="Fecha Vencimiento"
-              name="fecha_vencimiento"
-              type="datetime-local"
-              value={nuevaTarea.fecha_vencimiento}
-              onChange={handleChangeCrear}
-              fullWidth
-              InputLabelProps={{ shrink: true }} // para que el label no se superponga al valor
-            />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCerrarCrear}>Cancelar</Button>
-          <Button onClick={handleCrear}>Crear</Button>
-        </DialogActions>
-      </Dialog>
+<Dialog open={openCrear} onClose={handleCerrarCrear}>
+  <DialogTitle>Crear Tarea</DialogTitle>
+  <DialogContent>
+    <TextField
+      margin="dense"
+      label="Título"
+      name="titulo"
+      value={nuevaTarea.titulo}
+      onChange={handleChangeCrear}
+      fullWidth
+    />
+    <TextField
+      margin="dense"
+      label="Descripción"
+      name="descripcion"
+      value={nuevaTarea.descripcion}
+      onChange={handleChangeCrear}
+      fullWidth
+    />
+    <TextField
+      type="number"
+      margin="dense"
+      label="Prioridad"
+      name="prioridad"
+      value={nuevaTarea.prioridad}
+      onChange={handleChangeCrear}
+      fullWidth
+    />
+
+    {/* Select de Usuario encargado */}
+    <Select
+      label="Usuario encargado"
+      name="usuario_id"
+      value={nuevaTarea.usuario_id || ''}
+      onChange={handleChangeCrear}
+      fullWidth
+      margin="dense"
+      displayEmpty
+    >
+      <MenuItem value="" disabled>
+        Seleccione un usuario
+      </MenuItem>
+      {usuarios.map(user => (
+        <MenuItem key={user.id} value={user.id}>
+          {user.username}
+        </MenuItem>
+      ))}
+    </Select>
+
+    {/* Select de Estado */}
+    <Select
+      label="Estado"
+      name="estado"
+      value={nuevaTarea.estado}
+      onChange={handleChangeCrear}
+      fullWidth
+      margin="dense"
+      displayEmpty
+    >
+      <MenuItem value="" disabled>
+        Seleccione un estado
+      </MenuItem>
+      <MenuItem value="pendiente">Pendiente</MenuItem>
+      <MenuItem value="en progreso">En Progreso</MenuItem>
+      <MenuItem value="completada">Completada</MenuItem>
+    </Select>
+
+    <TextField
+      margin="dense"
+      label="Fecha Vencimiento"
+      name="fecha_vencimiento"
+      type="datetime-local"
+      value={nuevaTarea.fecha_vencimiento}
+      onChange={handleChangeCrear}
+      fullWidth
+      InputLabelProps={{ shrink: true }}
+    />
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={handleCerrarCrear}>Cancelar</Button>
+    <Button onClick={handleCrear}>Crear</Button>
+  </DialogActions>
+</Dialog>
+
 
       <Dialog open={openConfirmarBorrado} onClose={handleCancelarBorrado}>
         <DialogTitle>¿Confirmar eliminación?</DialogTitle>
