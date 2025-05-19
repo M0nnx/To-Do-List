@@ -4,10 +4,12 @@ from .serializers import TareaSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from usuarios.permissions import EsAdmin, EsCliente
 from .models import Tarea 
 
 # Create your views here.
 class crearTarea(APIView):
+    permission_classes = [EsAdmin]
     def post(self, request):
         serializer = TareaSerializer(data=request.data)
         if serializer.is_valid():
@@ -22,6 +24,7 @@ class Tareas(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK) 
 
 class editarTareas(APIView):
+    permission_classes = [EsAdmin]
     def patch(self, request, pk):
         try:
             tarea = Tarea.objects.get(pk=pk)
@@ -36,6 +39,7 @@ class editarTareas(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class borrarTareas(APIView):
+    permission_classes = [EsAdmin]
     def delete(self,request,pk):
         try:
             tarea = Tarea.objects.get(pk=pk)

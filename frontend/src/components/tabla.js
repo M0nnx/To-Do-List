@@ -10,7 +10,7 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
   const [openCrear, setOpenCrear] = useState(false);
   const [openConfirmarBorrado, setOpenConfirmarBorrado] = useState(false);
   const [tareaActual, setTareaActual] = useState(null);
-  const [nuevaTarea, setNuevaTarea] = useState({ titulo: '', descripcion: '', prioridad: '', estado: '' });
+  const [nuevaTarea, setNuevaTarea] = useState({ titulo: '', descripcion: '', prioridad: '', estado: '',fecha_vencimiento: '' });
   const [idAEliminar, setIdAEliminar] = useState(null);
 
   // Edición
@@ -34,7 +34,7 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
 
   // Creación
   const handleAbrirCrear = () => {
-    setNuevaTarea({ titulo: '', descripcion: '', prioridad: '', estado: '' });
+    setNuevaTarea({ titulo: '', descripcion: '', prioridad: '', estado: '',fecha_vencimiento: '' });
     setOpenCrear(true);
   };
 
@@ -81,13 +81,6 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
     });
   };
 
-  const handleChange = (e) => {
-    setTareaActual({
-      ...tareaActual,
-      [e.target.name]: e.target.value,
-    });
-  };
-
   return (
     <>
       <Button variant="contained" color="primary" onClick={handleAbrirCrear} style={{ marginBottom: 16 }}>
@@ -103,6 +96,7 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
               <TableCell>Descripción</TableCell>
               <TableCell>Prioridad</TableCell>
               <TableCell>Estado</TableCell>
+              <TableCell>Fecha Vencimiento</TableCell>
               <TableCell>Acciones</TableCell>
             </TableRow>
           </TableHead>
@@ -114,6 +108,17 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
                 <TableCell>{tarea.descripcion}</TableCell>
                 <TableCell>{tarea.prioridad}</TableCell>
                 <TableCell>{tarea.estado}</TableCell>
+                <TableCell>
+                  {tarea.fecha_vencimiento
+                    ? new Date(tarea.fecha_vencimiento).toLocaleString('es-CL', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })
+                    : ''}
+                </TableCell>
                 <TableCell>
                   <Button onClick={() => handleEditarClick(tarea)}>Editar</Button>
                   <Button color="error" onClick={() => handleSolicitarBorrado(tarea.id)}>Borrar</Button>
@@ -151,18 +156,32 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
             onChange={handleChangeEditar}
             fullWidth
           />
-          <Select
-            label="Estado"
-            name="estado"
-            value={tareaActual?.estado || ''}
-            onChange={handleChange}
-            fullWidth
-            margin="dense"
-          >
-            <MenuItem value="pendiente">Pendiente</MenuItem>
-            <MenuItem value="en progreso">En Progreso</MenuItem>
-            <MenuItem value="completada">Completada</MenuItem>
-          </Select>
+              <Select
+                label="Estado"
+                name="estado"
+                value={nuevaTarea.estado}
+                onChange={handleChangeCrear}
+                fullWidth
+                margin="dense"
+                displayEmpty
+              >
+                <MenuItem value="" disabled>
+                  Seleccione un estado
+                </MenuItem>
+                <MenuItem value="pendiente">Pendiente</MenuItem>
+                <MenuItem value="en progreso">En Progreso</MenuItem>
+                <MenuItem value="completada">Completada</MenuItem>
+              </Select>
+            <TextField
+              margin="dense"
+              label="Fecha Vencimiento"
+              name="fecha_vencimiento"
+              type="datetime-local"
+              value={tareaActual?.fecha_vencimiento ? tareaActual.fecha_vencimiento.slice(0, 16) : ''}
+              onChange={handleChangeEditar}
+              fullWidth
+              InputLabelProps={{ shrink: true }}
+            />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCerrarEditar}>Cancelar</Button>
@@ -197,18 +216,32 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
             onChange={handleChangeCrear}
             fullWidth
           />
-          <Select
-            label="Estado"
-            name="estado"
-            value={tareaActual?.estado || ''}
-            onChange={handleChange}
-            fullWidth
-            margin="dense"
-          >
-            <MenuItem value="pendiente">Pendiente</MenuItem>
-            <MenuItem value="en progreso">En Progreso</MenuItem>
-            <MenuItem value="completada">Completada</MenuItem>
-          </Select>
+            <Select
+              label="Estado"
+              name="estado"
+              value={nuevaTarea.estado}
+              onChange={handleChangeCrear}
+              fullWidth
+              margin="dense"
+              displayEmpty
+            >
+              <MenuItem value="" disabled>
+                Seleccione un estado
+              </MenuItem>
+              <MenuItem value="pendiente">Pendiente</MenuItem>
+              <MenuItem value="en progreso">En Progreso</MenuItem>
+              <MenuItem value="completada">Completada</MenuItem>
+            </Select>
+            <TextField
+              margin="dense"
+              label="Fecha Vencimiento"
+              name="fecha_vencimiento"
+              type="datetime-local"
+              value={nuevaTarea.fecha_vencimiento}
+              onChange={handleChangeCrear}
+              fullWidth
+              InputLabelProps={{ shrink: true }} // para que el label no se superponga al valor
+            />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCerrarCrear}>Cancelar</Button>
