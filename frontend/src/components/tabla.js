@@ -30,6 +30,7 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
       }
     };
     fetchData();
+    
   }, []); 
 
   if (loading) return <p className="text-center py-4">Cargando...</p>;
@@ -135,7 +136,7 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{tarea.prioridad}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   <span className={`px-6 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
-                    ${tarea.estado === 'completada' ? 'bg-green-100 text-green-800' : 
+                    ${tarea.estado === 'completa' ? 'bg-green-100 text-green-800' : 
                       tarea.estado === 'en progreso' ? 'bg-blue-100 text-blue-800' : 
                       'bg-yellow-100 text-yellow-800'}`}>
                     {tarea.estado}
@@ -238,7 +239,7 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
                     <option value="" disabled>Seleccione un estado</option>
                     <option value="pendiente">Pendiente</option>
                     <option value="en progreso">En Progreso</option>
-                    <option value="completada">Completada</option>
+                    <option value="completa">Completa</option>
                   </select>
                 </div>
                 <div>
@@ -343,7 +344,7 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
                     <option value="" disabled>Seleccione un estado</option>
                     <option value="pendiente">Pendiente</option>
                     <option value="en progreso">En Progreso</option>
-                    <option value="completada">Completada</option>
+                    <option value="completa">Completa</option>
                   </select>
                 </div>
                 <div>

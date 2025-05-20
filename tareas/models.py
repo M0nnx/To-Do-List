@@ -5,7 +5,7 @@ class Tarea(models.Model):
     ESTADOS = [
         ('pendiente', 'Pendiente'),
         ('en progreso', 'En Progreso'),
-        ('completada', 'Completada'),
+        ('completa', 'Completa'),
     ]
 
     titulo = models.CharField(max_length=100)

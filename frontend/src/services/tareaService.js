@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-const BASE_URL = "http://127.0.0.1:8000";
+const BASE_URL = "http://127.0.0.1:8000/tareas/";
 
 const getAuthHeader = () => {
   const token = Cookies.get('access');
@@ -12,18 +12,31 @@ const getAuthHeader = () => {
   return { Authorization: `Bearer ${token}` };
 };
 
-// Obtener todas las tareas
+const getTokenHeader = () => {
+  const token = Cookies.get('access');
+  if (!token) throw new Error('No token found');
+  return { Authorization: `Bearer ${token}` };
+};
+
+
+
+
+// Obtener Tareas
 export const obtenerTareas = async () => {
-  const headers = getAuthHeader();
-  if (!headers) return [];
+  const token = Cookies.get('access');
+  if (!token) {
+    console.warn('No token found, usuario no autenticado');
+    return null;
+  }
 
   try {
-    const response = await axios.get(`${BASE_URL}/tareas/`, { headers });
-    console.log("Tareas obtenidas:", response.data);
-    return Array.isArray(response.data) ? response.data : [];
+    const response = await axios.get(`${BASE_URL}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
   } catch (err) {
-    console.error("Error al obtener tareas:", err.response?.data || err.message);
-    return [];
+    console.error('Error al obtener tareas:', err.response?.data || err.message);
+    return { error: 'No se pudieron obtener las tareas' };
   }
 };
 
@@ -33,7 +46,7 @@ export const borrarTarea = async (id) => {
   if (!headers) return false;
 
   try {
-    const response = await axios.delete(`${BASE_URL}/tareas/borrar/${id}`, { headers });
+    const response = await axios.delete(`${BASE_URL}borrar/${id}`, { headers });
     console.log(`Tarea ${id} eliminada:`, response.data);
     return true;
   } catch (err) {
@@ -48,7 +61,7 @@ export const editarTarea = async (id, datosTarea) => {
   if (!headers) return null;
 
   try {
-    const response = await axios.patch(`${BASE_URL}/tareas/editar/${id}`, datosTarea, { headers });
+    const response = await axios.patch(`${BASE_URL}editar/${id}`, datosTarea, { headers });
     console.log(`Tarea ${id} editada:`, response.data);
     return response.data;
   } catch (err) {
@@ -64,11 +77,24 @@ export const crearTarea = async (datosTarea) => {
   if (!headers) return false;
 
   try {
-    const response = await axios.post(`${BASE_URL}/tareas/crear`, datosTarea, { headers });
+    const response = await axios.post(`${BASE_URL}crear`, datosTarea, { headers });
     console.log(`📌 Tarea creada:`, response.data);
     return true;
   } catch (err) {
     console.error(`❌ Error al crear la tarea:`, err.response?.data || err.message);
     return false;
+  }
+};
+
+
+export const actualizarTarea = async (tareaId, data) => {
+  try {
+    const response = await axios.put(`${BASE_URL}tareas/${tareaId}/`, data, {
+      headers: getTokenHeader(),
+    });
+    return response.data;
+  } catch (err) {
+    console.error('Update tarea error:', err.response?.data || err.message);
+    throw new Error('Failed to update tarea');
   }
 };
