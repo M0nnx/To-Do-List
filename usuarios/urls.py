@@ -1,12 +1,15 @@
 from django.urls import path
-from .views import RegistroVista,PerfilVista,Logout,VistaSoloAdmin,VistaSoloCliente,Usuarios
+from .views import RegistroVista,PerfilVista,Logout,Usuarios,borrarUsuario,editarUsuarios
 
 urlpatterns = [
-    path('user/registro/', RegistroVista.as_view(), name='registro'),
-    path('user/perfil/', PerfilVista.as_view(), name='perfil'),
-    path('user/salir/', Logout.as_view(), name='salir'),
-    path('users/', Usuarios.as_view(), name='verUsuarios'),
+    path('registro/', RegistroVista.as_view(), name='registro'),
+    path('perfil/', PerfilVista.as_view(), name='perfil'),
+    path('editar/', editarUsuarios.as_view(), name='editarUsuario'),
+    path('borrar/', borrarUsuario.as_view(), name='borrarUsuario'),
 
-    path('admin/', VistaSoloAdmin.as_view(), name='soloadmin'),
-    path('cliente/', VistaSoloCliente.as_view(), name='solocliente'),
+
+    path('salir/', Logout.as_view(), name='salir'),
+    path('', Usuarios.as_view(), name='verUsuarios'),
+
+
 ]
