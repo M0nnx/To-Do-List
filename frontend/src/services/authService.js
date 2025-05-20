@@ -2,6 +2,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 
 const API_URL = 'http://localhost:8000/api/';
+const API_URL2 = 'http://localhost:8000/usuarios/';
 
 const getTokenHeader = () => {
   const token = Cookies.get('access');
@@ -26,7 +27,7 @@ export const login = async (formData) => {
 // Función para registrarse
 export const register = async (formData) => {
   try {
-    const response = await axios.post(`${API_URL}user/registro/`, formData);
+    const response = await axios.post(`${API_URL2}user/registro/`, formData);
     return response.data;
   } catch (err) {
     console.error('Register error:', err.response ? err.response.data : err.message);
@@ -39,7 +40,7 @@ export const getPerfil = async () => {
   const token = Cookies.get('access');
   if (!token) throw new Error('No token found');
   try {
-    const response = await axios.get(`${API_URL}user/perfil/`, {
+    const response = await axios.get(`${API_URL2}user/perfil/`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import TablaTareas from '../components/tabla';
-import { obtenerTareas } from '../services/tareasservice';
+import { obtenerTareas } from '../services/tareaService';
 
 function TablaPage() {
   const [tareas, setTareas] = useState([]);
@@ -21,7 +21,7 @@ function TablaPage() {
 
   return (
     <div>
-      <h1 style={{ textAlign: 'center' }}>Lista de Tareas</h1>
+      <h1 className='px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider' style={{ textAlign: 'center' }}>Lista de Tareas</h1>
       <TablaTareas tareas={tareas} onTareasActualizadas={cargarTareas} />
     </div>
   );

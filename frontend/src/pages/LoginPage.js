@@ -20,7 +20,7 @@ function LoginPage() {
       const perfil = await getPerfil();
       Cookies.set('rol', perfil.rol); 
       if (perfil.rol === 'admin') {
-        navigate('/admin'); 
+        navigate('/perfil'); 
       } else {
         navigate('/perfil');
       }

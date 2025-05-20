@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { editarTarea, borrarTarea, crearTarea } from '../services/tareasservice';
+import { editarTarea, borrarTarea, crearTarea } from '../services/tareaService';
 import { getPerfil, obtenerUsuarios } from '../services/authService';
 
 
@@ -30,11 +30,10 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
       }
     };
     fetchData();
-  }, []); // Ejecutar solo al montar
+  }, []); 
 
   if (loading) return <p className="text-center py-4">Cargando...</p>;
 
-  // Edición
   const handleEditarClick = (tarea) => {
     setTareaActual(tarea);
     setOpenEditar(true);
@@ -53,7 +52,6 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
     }
   };
 
-  // Creación
   const handleAbrirCrear = () => {
     setNuevaTarea({ titulo: '', descripcion: '', prioridad: '', estado: '', fecha_vencimiento: '', username: '', usuario_id: '' });
     setOpenCrear(true);
@@ -69,7 +67,6 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
     handleCerrarCrear();
   };
 
-  // Borrado
   const handleSolicitarBorrado = (id) => {
     setIdAEliminar(id);
     setOpenConfirmarBorrado(true);
@@ -87,17 +84,15 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
     setIdAEliminar(null);
   };
 
-  // Cambios en formularios
   const handleChangeEditar = (e) => {
     setTareaActual({
       ...tareaActual,
       [e.target.name]: e.target.value,
     });
   };
-
   const handleChangeCrear = (e) => {
     const { name, value } = e.target;
-    console.log(`Cambio en ${name}:`, value); // <- Aquí para verificar
+    console.log(`Cambio en ${name}:`, value);
     setNuevaTarea({
       ...nuevaTarea,
       [name]: value,
@@ -119,35 +114,35 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Título</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prioridad</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Encargado</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha Vencimiento</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">ID</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Título</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Descripción</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Prioridad</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Estado</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Encargado</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Fecha Vencimiento</th>
               {usuario?.rol === 'admin' && (
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Acciones</th>
               )}
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {tareas.map((tarea) => (
               <tr key={tarea.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{tarea.id}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{tarea.id}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{tarea.titulo}</td>
                 <td className="px-6 py-4 text-sm text-gray-900">{tarea.descripcion}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{tarea.prioridad}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{tarea.prioridad}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <span className={`px-6 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
                     ${tarea.estado === 'completada' ? 'bg-green-100 text-green-800' : 
                       tarea.estado === 'en progreso' ? 'bg-blue-100 text-blue-800' : 
                       'bg-yellow-100 text-yellow-800'}`}>
                     {tarea.estado}
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{tarea.usuario.username}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{tarea.usuario.username}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {tarea.fecha_vencimiento
                     ? new Date(tarea.fecha_vencimiento).toLocaleString('es-CL', {
                       year: 'numeric',
@@ -187,7 +182,7 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
                     type="text"
                     name="titulo"
                     id="titulo"
-                    className="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                    className="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full h-10 shadow-sm sm:text-sm border-2 border-gray-200 rounded-md"
                     value={tareaActual?.titulo || ''}
                     onChange={handleChangeEditar}
                   />
@@ -198,7 +193,7 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
                     name="descripcion"
                     id="descripcion"
                     rows="3"
-                    className="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                    className="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full h-10 shadow-sm sm:text-sm border-2 border-gray-200 rounded-md"
                     value={tareaActual?.descripcion || ''}
                     onChange={handleChangeEditar}
                   />
@@ -209,7 +204,7 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
                     type="number"
                     name="prioridad"
                     id="prioridad"
-                    className="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                    className="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full h-10 shadow-sm sm:text-sm border-2 border-gray-200 rounded-md"
                     value={tareaActual?.prioridad || ''}
                     onChange={handleChangeEditar}
                   />
@@ -219,7 +214,7 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
                   <select
                     id="usuario_id"
                     name="usuario_id"
-                    className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    className="mt-1 block w-96 h-10 py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     value={tareaActual?.usuario_id || ''}
                     onChange={handleChangeEditar}
                   >
@@ -236,7 +231,7 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
                   <select
                     id="estado"
                     name="estado"
-                    className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    className="mt-1 block w-96 h-10 py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     value={tareaActual?.estado || ''}
                     onChange={handleChangeEditar}
                   >
@@ -252,7 +247,7 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
                     type="datetime-local"
                     name="fecha_vencimiento"
                     id="fecha_vencimiento"
-                    className="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                    className="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full h-10 shadow-sm sm:text-sm border-2 border-gray-200 rounded-md"
                     value={tareaActual?.fecha_vencimiento ? tareaActual.fecha_vencimiento.slice(0, 16) : ''}
                     onChange={handleChangeEditar}
                   />
@@ -286,24 +281,24 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
             <div className="p-6">
               <h3 className="text-lg font-medium text-gray-900 mb-4">Crear Tarea</h3>
               <div className="space-y-4">
-                <div>
+              <div >
                   <label htmlFor="titulo-nuevo" className="block text-sm font-medium text-gray-700">Título</label>
                   <input
-                    type="text"
-                    name="titulo"
-                    id="titulo-nuevo"
-                    className="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                    value={nuevaTarea.titulo}
-                    onChange={handleChangeCrear}
+                      type="text"
+                      name="titulo"
+                      id="titulo-nuevo"
+                      className="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full h-10 shadow-sm sm:text-sm border-2 border-gray-200 rounded-md"
+                      value={nuevaTarea.titulo}
+                      onChange={handleChangeCrear}
                   />
-                </div>
+              </div>
                 <div>
                   <label htmlFor="descripcion-nuevo" className="block text-sm font-medium text-gray-700">Descripción</label>
                   <textarea
                     name="descripcion"
                     id="descripcion-nuevo"
                     rows="3"
-                    className="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                    className="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full h-10 shadow-sm sm:text-sm border-2 border-gray-200 rounded-md"
                     value={nuevaTarea.descripcion}
                     onChange={handleChangeCrear}
                   />
@@ -314,7 +309,7 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
                     type="number"
                     name="prioridad"
                     id="prioridad-nuevo"
-                    className="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                    className="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full h-10 shadow-sm sm:text-sm border-2 border-gray-200 rounded-md"
                     value={nuevaTarea.prioridad}
                     onChange={handleChangeCrear}
                   />
@@ -324,7 +319,7 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
                   <select
                     id="usuario_id-nuevo"
                     name="usuario_id"
-                    className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    className="mt-1 block w-96 h-10 py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     value={nuevaTarea.usuario_id || ''}
                     onChange={handleChangeCrear}
                   >
@@ -341,7 +336,7 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
                   <select
                     id="estado-nuevo"
                     name="estado"
-                    className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    className="mt-1 block w-96 h-10 py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     value={nuevaTarea.estado}
                     onChange={handleChangeCrear}
                   >
@@ -357,7 +352,7 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
                     type="datetime-local"
                     name="fecha_vencimiento"
                     id="fecha_vencimiento-nuevo"
-                    className="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                    className="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full h-10 shadow-sm sm:text-sm border-2 border-gray-200 rounded-md"
                     value={nuevaTarea.fecha_vencimiento}
                     onChange={handleChangeCrear}
                   />
