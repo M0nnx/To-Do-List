@@ -112,6 +112,7 @@ class borrarTareas(APIView):
         
 class ListaTareasUsuario(APIView):
     permission_classes = [IsAuthenticated]
+    permission_classes = [EsCliente]
     def get(self, request):
         tareas = Tarea.objects.filter(usuario=request.user)
         serializer = TareaSerializer(tareas, many=True)
