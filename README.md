@@ -5,9 +5,13 @@ Este proyecto está diseñado para facilitar la administración, asignación y s
 ### Backend:
 
 Python
+
 Django
+
 Django REST Framework
+
 JWT para autenticación segura
+
 
 ### Frontend:
 
