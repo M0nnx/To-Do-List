@@ -4,19 +4,16 @@ Este proyecto está diseñado para facilitar la administración, asignación y s
 ## Tecnologías utilizadas🚀
 ### Backend:
 
-Python
-
-Django
-
-Django REST Framework
-
+Python,
+Django,
+Django REST Framework,
 JWT para autenticación segura
 
 
 ### Frontend:
 
-React
-JavaScript
+React,
+JavaScript,
 Tailwind CSS
 
 ### Base de datos:
