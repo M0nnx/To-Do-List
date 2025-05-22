@@ -105,14 +105,17 @@ Authorization: Bearer <tu_token>
 ```
 
 ### 📚 Endpoints principales
-| Recurso  | Método   | Ruta               | Descripción                            |
-| -------- | -------- | ------------------ | -------------------------------------- |
-| Usuarios | `GET`    | `/api/users/`      | Listar todos los usuarios (solo admin) |
-| Usuarios | `POST`   | `/api/users/`      | Crear un nuevo usuario                 |
-| Tareas   | `GET`    | `/api/tasks/`      | Listar tareas del usuario autenticado  |
-| Tareas   | `POST`   | `/api/tasks/`      | Crear una nueva tarea                  |
-| Tareas   | `PUT`    | `/api/tasks/<id>/` | Actualizar una tarea                   |
-| Tareas   | `DELETE` | `/api/tasks/<id>/` | Eliminar una tarea                     |
+| Recurso  | Método   | Ruta                   | Descripción                            |
+| -------- | -------- | -----------------------| -------------------------------------- |
+| Usuarios | `GET`    | `/usuarios/`           | Listar todos los usuarios (solo admin) |
+| Usuarios | `POST`   | `/usuarios/registro`   | Crear un nuevo usuario                 |
+| Usuarios | `DELETE` | `/usuarios/borrar/<id>`| Eliminar un usuario                    |
+| Usuarios | `PATCH`  | `/usuarios/borrar/<id>`| Editar datos del usuario autenticado   |
+
+| Tareas   | `GET`    | `/tareas/usuarios/<id>`| Listar tareas del usuario autenticado  |
+| Tareas   | `POST`   | `/tareas/crear/`       | Crear una nueva tarea                  |
+| Tareas   | `PATCH`  | `/tareas/editar/<id>/` | Actualizar una tarea                   |
+| Tareas   | `DELETE` | `/tareas/borrar/<id>/` | Eliminar una tarea                     |
 
 
 
