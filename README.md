@@ -111,7 +111,7 @@ Authorization: Bearer <tu_token>
 | Usuarios | `POST`   | `/api/users/`      | Crear un nuevo usuario                 |
 | Tareas   | `GET`    | `/api/tasks/`      | Listar tareas del usuario autenticado  |
 | Tareas   | `POST`   | `/api/tasks/`      | Crear una nueva tarea                  |
-| Tareas   | `PUT`    | `/api/tasks/<id>/` | Actualizar una tarea existente         |
+| Tareas   | `PUT`    | `/api/tasks/<id>/` | Actualizar una tarea                   |
 | Tareas   | `DELETE` | `/api/tasks/<id>/` | Eliminar una tarea                     |
 
 
