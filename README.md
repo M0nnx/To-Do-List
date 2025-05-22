@@ -111,7 +111,6 @@ Authorization: Bearer <tu_token>
 | Usuarios | `POST`   | `/usuarios/registro`   | Crear un nuevo usuario                 |
 | Usuarios | `DELETE` | `/usuarios/borrar/<id>`| Eliminar un usuario                    |
 | Usuarios | `PATCH`  | `/usuarios/borrar/<id>`| Editar datos del usuario autenticado   |
-
 | Tareas   | `GET`    | `/tareas/usuarios/<id>`| Listar tareas del usuario autenticado  |
 | Tareas   | `POST`   | `/tareas/crear/`       | Crear una nueva tarea                  |
 | Tareas   | `PATCH`  | `/tareas/editar/<id>/` | Actualizar una tarea                   |
