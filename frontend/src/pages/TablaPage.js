@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import TablaCliente from '../components/tabla';        // Vista para cliente
-import TablaAdmin from '../components/tablaAdmin';     // Vista para admin
+import TablaCliente from '../components/TareasCliente';
+import TablaAdmin from '../components/tablaAdmin';    
 import { obtenerTareas } from '../services/tareaService';
 import { getPerfil } from '../services/authService';
 
@@ -44,7 +44,7 @@ function TablaPage() {
       </h1>
 
       {usuario?.rol === 'admin' ? (
-        <TablaAdmin tareas={tareas} onTareasActualizadas={cargarTareas} />
+        <TablaCliente tareas={tareas} onTareasActualizadas={cargarTareas} />
       ) : (
         <TablaCliente tareas={tareas} onTareasActualizadas={cargarTareas} />
       )}

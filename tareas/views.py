@@ -1,16 +1,17 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
-from .serializers import TareaSerializer
+from .serializers import TareaSerializer,UsuarioSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from usuarios.permissions import EsAdmin, EsCliente
+from usuarios.permissions import EsAdmin, EsCliente,EsAdminOCliente
 from .models import Tarea 
+from usuarios.models import Usuario
 
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
-# Create your views here.
+# Vistas Admin
 class crearTarea(APIView):
     permission_classes = [EsAdmin]
     @swagger_auto_schema(
@@ -32,19 +33,8 @@ class crearTarea(APIView):
             return Response({"mensaje": "Tarea creada correctamente"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class Tareas(APIView):
-    permission_classes = [IsAuthenticated]
-    @swagger_auto_schema(
-        operation_summary="Lista todas las tareas",
-        responses={200: TareaSerializer(many=True)}
-    )
-    def get(self, request):
-        tareas = Tarea.objects.all() 
-        serializer = TareaSerializer(tareas, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK) 
-
 class editarTareas(APIView):
-    permission_classes = [EsAdmin]
+    permission_classes = [EsAdminOCliente]
     @swagger_auto_schema(
         operation_summary="Edita una tarea existente",
         manual_parameters=[
@@ -110,13 +100,29 @@ class borrarTareas(APIView):
         tarea.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
         
-class ListaTareasUsuario(APIView):
+class Tareas(APIView):
     permission_classes = [IsAuthenticated]
-    permission_classes = [EsCliente]
+    @swagger_auto_schema(
+        operation_summary="Lista todas las tareas",
+        responses={200: TareaSerializer(many=True)}
+    )
     def get(self, request):
-        tareas = Tarea.objects.filter(usuario=request.user)
+        tareas = Tarea.objects.all() 
         serializer = TareaSerializer(tareas, many=True)
-        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        return Response(serializer.data, status=status.HTTP_200_OK) 
+
+class ListaTareasUsuario(APIView):
+    @swagger_auto_schema(
+        operation_summary="Lista todas las tareas del usuario",
+        responses={200: TareaSerializer(many=True)}
+    )
+    def get(self, request, pk):
+        try:
+            usuario_obj = Usuario.objects.get(id=pk)
+        except Usuario.DoesNotExist:
+            return Response({"mensaje": "Usuario no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+        tareas = Tarea.objects.filter(usuario=usuario_obj)
         if not tareas.exists():
             return Response({"mensaje": "No tienes tareas registradas"}, status=status.HTTP_204_NO_CONTENT)
-
+        serializer = TareaSerializer(tareas, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

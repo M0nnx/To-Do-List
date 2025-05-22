@@ -3,7 +3,7 @@ import { editarTarea, borrarTarea, crearTarea } from '../services/tareaService';
 import { getPerfil, obtenerUsuarios } from '../services/authService';
 
 
-export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
+export default function TareasCliente({ tareas = [], onTareasActualizadas }) {
   const [openEditar, setOpenEditar] = useState(false);
   const [openCrear, setOpenCrear] = useState(false);
   const [openConfirmarBorrado, setOpenConfirmarBorrado] = useState(false);
@@ -122,9 +122,8 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Estado</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Encargado</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Fecha Vencimiento</th>
-              {usuario?.rol === 'admin' && (
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Acciones</th>
-              )}
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Acciones</th>
+
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
@@ -154,16 +153,17 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
                     })
                     : ''}
                 </td>
-                {usuario?.rol === 'admin' && (
+
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <button onClick={() => handleEditarClick(tarea)} className="text-blue-600 hover:text-blue-900 mr-3">
                       Editar
                     </button>
+                          {usuario?.rol === 'admin' && (
                     <button onClick={() => handleSolicitarBorrado(tarea.id)} className="text-red-600 hover:text-red-900">
                       Borrar
                     </button>
+                                 )}
                   </td>
-                )}
               </tr>
             ))}
           </tbody>
@@ -177,6 +177,7 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
             <div className="p-6">
               <h3 className="text-lg font-medium text-gray-900 mb-4">Editar Tarea</h3>
               <div className="space-y-4">
+                  {usuario?.rol === 'admin' && (
                 <div>
                   <label htmlFor="titulo" className="block text-sm font-medium text-gray-700">Título</label>
                   <input
@@ -188,6 +189,8 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
                     onChange={handleChangeEditar}
                   />
                 </div>
+                  )}
+                  {usuario?.rol === 'admin' && (
                 <div>
                   <label htmlFor="descripcion" className="block text-sm font-medium text-gray-700">Descripción</label>
                   <textarea
@@ -199,6 +202,8 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
                     onChange={handleChangeEditar}
                   />
                 </div>
+                  )}
+                
                 <div>
                   <label htmlFor="prioridad" className="block text-sm font-medium text-gray-700">Prioridad</label>
                   <input
@@ -210,6 +215,7 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
                     onChange={handleChangeEditar}
                   />
                 </div>
+                {usuario?.rol === 'admin' && (
                 <div>
                   <label htmlFor="usuario_id" className="block text-sm font-medium text-gray-700">Usuario encargado</label>
                   <select
@@ -227,6 +233,7 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
                     ))}
                   </select>
                 </div>
+                )}
                 <div>
                   <label htmlFor="estado" className="block text-sm font-medium text-gray-700">Estado</label>
                   <select
@@ -386,7 +393,7 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
           <div className="bg-white rounded-lg shadow-xl w-full max-w-sm mx-4">
             <div className="p-6">
               <h3 className="text-lg font-medium text-gray-900 mb-4">¿Confirmar eliminación?</h3>
-              <div className="mt-6 flex justify-end space-x-3">
+                            <div className="mt-6 flex justify-end space-x-3">
                 <button
                   type="button"
                   className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
@@ -402,6 +409,9 @@ export default function TablaTareas({ tareas = [], onTareasActualizadas }) {
                   Eliminar
                 </button>
               </div>
+
+
+
             </div>
           </div>
         </div>

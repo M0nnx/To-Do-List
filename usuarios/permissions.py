@@ -7,3 +7,10 @@ class EsAdmin(BasePermission):
 class EsCliente(BasePermission):
     def has_permission(self, request, view):
         return request.user.is_authenticated and request.user.is_cliente()
+
+class EsAdminOCliente(BasePermission):
+    def has_permission(self, request, view):
+        return (
+            request.user.is_authenticated and
+            (request.user.rol == 'admin' or request.user.rol == 'cliente')
+        )
