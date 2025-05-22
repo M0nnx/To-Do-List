@@ -16,6 +16,7 @@ Es ideal para empresas que buscan mejorar su planificación interna, la supervis
 ### Frontend
 - React
 - JavaScript
+- HTML
 - Tailwind CSS
 
 ### Base de datos
