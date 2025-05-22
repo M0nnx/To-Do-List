@@ -69,3 +69,51 @@ npm install
 npm start
 ```
 
+## 🔌 API REST
+
+El sistema expone una **API RESTful** desarrollada con **Django REST Framework**, permitiendo su integración con otros servicios o clientes externos.
+
+### 🔐 Autenticación
+
+Se utiliza **JWT (JSON Web Tokens)** para autenticar las peticiones.
+
+- Obtener token de acceso:
+
+```http
+POST /api/token/
+Content-Type: application/json
+
+{
+  "username": "tu_usuario",
+  "password": "tu_contraseña"
+}
+```
+- Refrescar token:
+  
+```http
+POST /api/token/refresh/
+Content-Type: application/json
+
+{
+  "refresh": "tu_token_refresh"
+}
+```
+- Las peticiones autenticadas deben incluir el token en el encabezado:
+```http
+Authorization: Bearer <tu_token>
+
+```
+
+### 📚 Endpoints principales
+| Recurso  | Método   | Ruta               | Descripción                            |
+| -------- | -------- | ------------------ | -------------------------------------- |
+| Usuarios | `GET`    | `/api/users/`      | Listar todos los usuarios (solo admin) |
+| Usuarios | `POST`   | `/api/users/`      | Crear un nuevo usuario                 |
+| Tareas   | `GET`    | `/api/tasks/`      | Listar tareas del usuario autenticado  |
+| Tareas   | `POST`   | `/api/tasks/`      | Crear una nueva tarea                  |
+| Tareas   | `PUT`    | `/api/tasks/<id>/` | Actualizar una tarea existente         |
+| Tareas   | `DELETE` | `/api/tasks/<id>/` | Eliminar una tarea                     |
+
+
+
+
