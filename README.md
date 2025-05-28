@@ -116,6 +116,9 @@ Authorization: Bearer <tu_token>
 | Tareas   | `PATCH`  | `/tareas/editar/<id>/` | Actualizar una tarea                   |
 | Tareas   | `DELETE` | `/tareas/borrar/<id>/` | Eliminar una tarea                     |
 
+## 🙌 Autor
+
+- [Esteban](https://www.linkedin.com/in/estebanda)
 
 
 
